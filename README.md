@@ -19,6 +19,7 @@ Pequeñas recomendaciones para instalar el proyecto.
 ### Screenshot
 ***
 Imagenes del proyecto
+```
 ![Image text](Contenido/1.PNG)
 ![Image text](Contenido/2.PNG)
 ![Image text](Contenido/3.PNG)
@@ -27,8 +28,11 @@ Imagenes del proyecto
 ![Image text](Contenido/6.PNG)
 ![Image text](Contenido/7.PNG)
 ![Image text](Contenido/8.PNG)
+```
 
 ### MER
 ***
 Modelo Entidad Relación del Proyecto
+```
 ![Image text](Contenido/MER-RP3.PNG)
+```
