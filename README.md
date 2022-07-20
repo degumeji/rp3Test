@@ -6,7 +6,7 @@
 El proyecto contiene el desarrollo del proyecto.
 
 ### Screenshot
-![Image text](/contenido/1.png)
+![Image text](/Contenido/1.png)
 
 ## Installation
 ***
