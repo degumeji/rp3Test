@@ -6,7 +6,7 @@
 El proyecto contiene el desarrollo del proyecto.
 
 ### Screenshot
-![Image text](https://github.com/degumeji/rp3Test/tree/rp3Test/Contenido/1.png)
+![Image text](Contenido/1.PNG)
 
 ## Installation
 ***
