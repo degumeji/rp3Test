@@ -14,6 +14,7 @@ Pequeñas recomendaciones para instalar el proyecto.
 ```
 1. Puede instalar el archivo .bak para cargar la base de datos o ejecutar el script sobre la base de datos nueva.
 2. Ejecutar y probar el aplicativo.
+3. User: admin y Pass: admin
 ```
 
 ### Screenshot
