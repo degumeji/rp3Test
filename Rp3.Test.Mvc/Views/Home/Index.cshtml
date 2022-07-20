@@ -4,7 +4,22 @@
 
 <div class="jumbotron">
     <h1>Balance</h1>
-    <p class="lead">Bitácora de mis Ingresos y Gastos</p>    
+    <p class="lead">Bitácora de mis Ingresos y Gastos</p>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4">
+        @if (Session["user"] == null)
+        {
+            <p><a class="btn btn-default" href="@Url.Action("Index","User")">Log in</a></p>
+        }
+        else
+        {
+            <p>Bienvenido - <b>@Session["user"].ToString() </b></p>
+            <p><a class="btn btn-default" href="@Url.Action("LogOut","User")">Log Out</a></p>
+        }
+    </div>
 </div>
 
 <div class="row">
@@ -26,5 +41,5 @@
         <h2>Categorías</h2>
         <p>Agregue o revise los Rubros Disponibles</p>
         <p><a class="btn btn-default" href="@Url.Action("Index","Category")">Ir a Categorías</a></p>
-    </div>   
-</div>
+    </div>
+</div> 

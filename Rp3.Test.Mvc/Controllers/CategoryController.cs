@@ -24,8 +24,6 @@ namespace Rp3.Test.Mvc.Controllers
             return View(categories);
         }
 
-
-
         public ActionResult Edit(int categoryId)
         {
             Rp3.Test.Proxies.Proxy proxy = new Proxies.Proxy();

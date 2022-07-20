@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Web;
 
 namespace Rp3.Test.Proxies
@@ -15,8 +16,6 @@ namespace Rp3.Test.Proxies
                 return System.Web.Configuration.WebConfigurationManager.AppSettings["webApiUrl"];
             }
         }
-
-        
 
         protected T HttpGet<T>(string uri, params object[] args)
         {

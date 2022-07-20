@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Rp3.Test.Common.Models;
 
 namespace Rp3.Test.WebApi.Data.Controllers
 {
@@ -49,36 +50,89 @@ namespace Rp3.Test.WebApi.Data.Controllers
             return Ok(commonModel);
         }
 
-        public IHttpActionResult Insert(Rp3.Test.Common.Models.Transaction transaction)
+        [HttpGet]
+        public IHttpActionResult GetBalance()
         {
-            //Complete the code
+            List<Balance> commonModel = new List<Balance>();
+
             using (DataService service = new DataService())
             {
-                Rp3.Test.Data.Models.Transaction model = new Test.Data.Models.Transaction();
-                model.TransactionId = service.Transactions.GetMaxValue<int>(p => p.TransactionId, 0) + 1;
+                var model = service.Transactions.GetBalance();
 
+                commonModel = model.Select(p => new Balance()
+                {
+                    CATEGORY = p.CATEGORY,
+                    SALDO = p.SALDO
+                }).ToList();
+            }
+            return Ok(commonModel);
+        }
 
+        [HttpGet]
+        public IHttpActionResult GetById(int transactionId)
+        {
+            Transaction commonModel = null;
+            using (DataService service = new DataService())
+            {
+                var model = service.Transactions.GetByID(transactionId);
 
-                service.Transactions.Insert(model);
+                commonModel = new Transaction()
+                {
+                    TransactionId = model.TransactionId,
+                    TransactionTypeId = model.TransactionTypeId,
+                    CategoryId = model.CategoryId,
+                    RegisterDate = model.RegisterDate,
+                    Amount = model.Amount,
+                    ShortDescription = model.ShortDescription,
+                    Notes = model.Notes
+                };
+            }
+            return Ok(commonModel);
+        }
+
+        [HttpPost]
+        public IHttpActionResult Insert(Transaction transaction)
+        {
+            using (DataService service = new DataService())
+            {
+                Rp3.Test.Data.Models.Transaction transactionModel = new Rp3.Test.Data.Models.Transaction();
+
+                transactionModel.TransactionTypeId = transaction.TransactionTypeId;
+                transactionModel.CategoryId = transaction.CategoryId;
+                transactionModel.RegisterDate = transaction.RegisterDate;
+                transactionModel.Amount = transaction.Amount;
+                transactionModel.ShortDescription = transaction.ShortDescription;
+                transactionModel.Notes = transaction.Notes;
+
+                transactionModel.TransactionId = service.Transactions.GetMaxValue<int>(p => p.TransactionId, 0) + 1;
+
+                service.Transactions.Insert(transactionModel);
                 service.SaveChanges();
             }
 
-            return Ok();
+            return Ok(true);
         }
 
-        public IHttpActionResult Update(Rp3.Test.Common.Models.Transaction transaction)
+        [HttpPost]
+        public IHttpActionResult Update(Transaction transaction)
         {
             //Complete the code
             using (DataService service = new DataService())
             {
                 Rp3.Test.Data.Models.Transaction model = service.Transactions.GetByID(transaction.TransactionId);
 
-                
+                model.TransactionTypeId = transaction.TransactionTypeId;
+                model.CategoryId = transaction.CategoryId;
+                model.RegisterDate = transaction.RegisterDate;
+                model.Amount = transaction.Amount;
+                model.ShortDescription = transaction.ShortDescription;
+                model.Notes = transaction.Notes;
+
                 service.Transactions.Update(model);
                 service.SaveChanges();
             }
 
-            return Ok();
+            return Ok(true);
         }
     }
 }

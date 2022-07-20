@@ -9,6 +9,21 @@
 </div>
 
 <div class="row">
+    <div class="col-md-4">
+        @if (Session["user"] == null)
+        {
+            <p style="color:red;">*Para poder realizar cambios debe iniciar sesion.</p>
+            <p><a class="btn btn-default" href="@Url.Action("Index","User")">Log in</a></p>
+        }
+        else
+        {
+            <h2>Bienvenido - @Session["user"].ToString() </h2>
+            <p><a class="btn btn-default" href="@Url.Action("LogOut","User")">Log Out</a></p>
+        }
+    </div>
+</div>
+
+<div class="row">
     <div class="col-lg-12">
         <table style="width:50%">
             <thead>
@@ -22,14 +37,29 @@
             <tbody>
                 @foreach (var category in Model)
                 {
-                    <tr>
+                <tr>
+                    @if (Session["user"] == null)
+                    {
+                        <td><a class="btn btn-primary" href="#">Editar</a></td>
+                    }
+                    else
+                    {
                         <td><a class="btn btn-default" href="@Url.Action("Edit", new { categoryId = category.CategoryId })">Editar</a></td>
-                        <td>@category.CategoryId</td>
-                        <td>@category.Name</td>
-                        <td class="text-center">@Html.CheckBox("category-active-check", category.Active, htmlAttributes: new { disabled = "disabled" })</td>
-                    </tr>
+                    }
+                    <td>@category.CategoryId</td>
+                    <td>@category.Name</td>
+                    <td class="text-center">@Html.CheckBox("category-active-check", category.Active, htmlAttributes: new { disabled = "disabled" })</td>
+                </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+<div>
+    @Html.ActionLink("Back to Home", "Index", "Home")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -18,10 +19,13 @@ namespace Rp3.Test.Proxies
         private const string UriGetCategoryById = "api/categoryData/getById?categoryId={0}";
         private const string UriInsertCategory = "api/categoryData/insert";
         private const string UriUpdateCategory = "api/categoryData/update";
-
         private const string UriGetTransactionType = "api/transactionTypeData/get";
-
         private const string UriGetTransactions = "api/transactionData/get";
+        private const string UriGetTransactionById = "api/transactionData/getById?transactionId={0}";
+        private const string UriInsertTransaction = "api/transactionData/insert";
+        private const string UriUpdateTransaction = "api/transactionData/update";
+        private const string UriGetByUserPass = "api/userData/GetByUserPass?user={0}&pass={1}";
+        private const string UriGetBalance = "api/transactionData/getBalance";
 
         /// <summary>
         /// Obtiene el Listado de Tipos de Transacción
@@ -77,10 +81,32 @@ namespace Rp3.Test.Proxies
         /// <returns></returns>
         public List<TransactionView> GetTransactions()
         {
-            return HttpGet<List<TransactionView>>(UriGetTransactions);
+            return HttpGet<List<TransactionView>>(UriGetTransactions);            
         }
 
+        public Transaction GetTransactionById(int transactionId)
+        {
+            return HttpGet<Transaction>(UriGetTransactionById, transactionId);
+        }
 
+        public bool CreateTransaction(Transaction transaction)
+        {
+            return HttpPostAsJson<bool>(UriInsertTransaction, transaction);
+        }
 
+        public bool UpdateTransaction(Transaction transaction)
+        {
+            return HttpPostAsJson<bool>(UriUpdateTransaction, transaction);
+        }
+
+        public bool GetByUserPass(params object[] arg)
+        {
+            return HttpGet<bool>(UriGetByUserPass, arg);
+        }
+
+        public List<Balance> GetBalances()
+        {
+            return HttpGet<List<Balance>>(UriGetBalance);
+        }
     }
 }

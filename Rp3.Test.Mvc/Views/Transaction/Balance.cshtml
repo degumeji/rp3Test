@@ -1,9 +1,102 @@
-﻿@model List<Rp3.Test.Mvc.Models.TransactionViewModel>
+﻿@model IEnumerable<Rp3.Test.Mvc.Models.BalanceViewModel>
 @{
     ViewBag.Title = "Balance";
 }
 
 <div class="jumbotron">
     <h1>Balance</h1>
-    <p class="lead">Resumen por Categoría</p>    
+    <p class="lead">Resumen por Categoría</p>
 </div>
+
+<div class="row">
+    <div class="col-md-4">
+        @if (Session["user"] == null)
+        {
+            <p style="color:red;">*Para poder realizar cambios debe iniciar sesion.</p>
+            <br />
+            <p><a class="btn btn-default" href="@Url.Action("Index", "User")">Log in</a></p>
+        }
+        else
+        {
+            <h2>Bienvenido - @Session["user"].ToString() </h2>
+            <p><a class="btn btn-default" href="@Url.Action("LogOut", "User")">Log Out</a></p>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <table style="width:50%; margin-left:30% ;">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.CATEGORY
+                    </td>
+                    <td>
+                        @{
+                            string nuevoValor = "";
+
+                            if (item.SALDO < 0)
+                            {
+                                nuevoValor = "($ " + String.Format("{0:n2}", (item.SALDO * -1)) + ")";
+                            }
+                            else
+                            {
+                                nuevoValor = "$ " + String.Format("{0:n2}", item.SALDO);
+                            }
+                            @nuevoValor;
+
+                        }
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <td>
+                    <b>TOTAL</b>
+                </td>
+                <td>
+                    <b>
+                        @{
+                            decimal suma = 0;
+
+                            foreach (var item in Model)
+                            {
+                                suma = suma + item.SALDO;
+                            }
+
+                            string nuevoValor2 = "";
+
+                            if (suma < 0)
+                            {
+                                nuevoValor2 = "($ " + String.Format("{0:n2}", (suma * -1)) + ")";
+                            }
+                            else
+                            {
+                                nuevoValor2 = "$ " + String.Format("{0:n2}", suma);
+                            }
+
+                            @nuevoValor2;
+                        }
+                    </b>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+<div>
+    @Html.ActionLink("Back to Home", "Index", "Home")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

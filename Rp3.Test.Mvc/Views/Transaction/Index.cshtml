@@ -5,11 +5,33 @@
 
 <div class="jumbotron">
     <h1>Mis Transacciones</h1>
-    <p class="lead">Registro de Ingresos y Gastos</p>    
-    <a class="btn btn-default" href="@Url.Action("Create","Transaction")">Nuevo</a>
+    <p class="lead">Registro de Ingresos y Gastos</p>
+    @if (Session["user"] == null)
+    {
+        <a class="btn btn-default" href="#">Nuevo</a>
+    }
+    else
+    {
+        <a class="btn btn-default" href="@Url.Action("Create","Transaction")">Nuevo</a>
+    }
 </div>
 
-<div class="row">    
+<div class="row">
+    <div class="col-md-4">
+        @if (Session["user"] == null)
+        {
+            <p style="color:red;">*Para poder realizar cambios debe iniciar sesion.</p>
+            <p><a class="btn btn-default" href="@Url.Action("Index","User")">Log in</a></p>
+        }
+        else
+        {
+            <h2>Bienvenido - @Session["user"].ToString() </h2>
+            <p><a class="btn btn-default" href="@Url.Action("LogOut","User")">Log Out</a></p>
+        }
+    </div>
+</div>
+
+<div class="row">
     <table style="width:100%">
         <thead>
             <tr>
@@ -26,31 +48,189 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td><a class="btn btn-primary" href="@Url.Action("Edit", new { id = item.TransactionId })">Editar</a></td>                
-                <td>
-                    @item.TransactionId
-                </td>
-                <td>
-                    @string.Format("{0:dd/MMM/yyyy}", item.RegisterDate)
-                </td>
-                <td>
-                    @item.CategoryName
-                </td>
-                <td>
-                    @item.TransactionType
-                </td>
-                <td>
-                    @item.ShortDescription
-                </td>
-                <td>
-                    @string.Format("{0:c2}", item.Amount)
-                </td>
-                <td>
-                    @item.Notes
-                </td>
-            </tr>
+                <tr>
+                    @if (Session["user"] == null)
+                    {
+                        <td><a class="btn btn-primary" href="#">Editar</a></td>
+                    }
+                    else
+                    {
+                        /*<a class="btn btn-primary" href="@Url.Action("Edit", new { id = item.TransactionId })">Editar</a>*/
+                        <td>
+                            <a href="#" id="btnEdit" class="btn btn-primary btn-sm" data-id="@item.TransactionId">Editar</a>
+                        </td>
+                    }
+                    <td>
+                        @item.TransactionId
+                    </td>
+                    <td>
+                        @string.Format("{0:dd/MMM/yyyy}", item.RegisterDate)
+                    </td>
+                    <td>
+                        @item.CategoryName
+                    </td>
+                    <td>
+                        @item.TransactionType
+                    </td>
+                    <td>
+                        @item.ShortDescription
+                    </td>
+                    <td>
+                        @string.Format("{0:c2}", item.Amount)
+                    </td>
+                    <td>
+                        @item.Notes
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
+
+
+<div id="MyPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    &times;
+                </button>
+                <h4 class="modal-title">Editar</h4>
+            </div>
+            <div class="modal-body" style="margin-left:16%;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                TransactionId: <input id="TransactionId" asp-for="TransactionId" class="form-control" readonly="readonly" />
+                            </div>
+                            <div class="form-group">
+                                Tipo de Transacción: <select id="TransactionTypeSelect" name="TransactionTypeSelect" asp-for="TransactionTypeSelect" class="form-control"></select>
+                            </div>
+                            <div class="form-group">
+                                Categoría: <select id="CategorySelect" name="CategorySelect" asp-for="CategorySelect" class="form-control"></select>
+                            </div>
+                            <div class="form-group">
+                                Fecha de Registro: <input id="RegisterDate" asp-for="RegisterDate" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                Amount: <input id="Amount" asp-for="Amount" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                ShortDescription: <input id="ShortDescription" asp-for="ShortDescription" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                Notes: <input id="Notes" asp-for="Notes" class="form-control" />
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <input type="submit" value="Editar" class="btn btn-success btn-sm editar" style="width:100%;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--div class="modal-footer">
+                <input type="button" id="btnClosePopup" value="Close" data-dismiss="modal" class="btn btn-danger" />
+            </div-->
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to Home", "Index", "Home")
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(".editar").click(editarRegistros);
+
+        $("body").on('click', '#btnEdit', function () {
+            $("#MyPopup").modal("show");
+
+            var Id = $(this).attr('data-id');
+
+            $.ajax({
+                url: '/Transaction/GetPOPUP',
+                data: "id=" + Id,
+                type: 'GET',
+                dataType: 'html',
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    var TransactionId = JSON.parse(response).TransactionId;
+                    var TransactionTypeId = JSON.parse(response).TransactionTypeId;
+                    var CategoryId = JSON.parse(response).CategoryId;
+                    var RegisterDate = JSON.parse(response).RegisterDateString;
+                    var Amount = JSON.parse(response).Amount;
+                    var ShortDescription = JSON.parse(response).ShortDescription;
+                    var Notes = JSON.parse(response).Notes;
+
+                    let arr = JSON.parse(response).TransactionTypeSelectList;
+
+                    for (let i = 0; i < arr.length; i++) {
+                        if (TransactionTypeId == arr[i].Value) {
+                            $("#TransactionTypeSelect").append('<option value="' + arr[i].Value + '" selected>' + arr[i].Text + '</option>');
+                        } else {
+                            $("#TransactionTypeSelect").append('<option value="' + arr[i].Value + '">' + arr[i].Text + '</option>');
+                        }
+                    }
+
+                    arr = JSON.parse(response).CategorySelectList;
+
+                    for (let i = 0; i < arr.length; i++) {
+                        if (CategoryId == arr[i].Value) {
+                            $("#CategorySelect").append('<option value="' + arr[i].Value + '" selected>' + arr[i].Text + '</option>');
+                        } else {
+                            $("#CategorySelect").append('<option value="' + arr[i].Value + '">' + arr[i].Text + '</option>');
+                        }
+                    }
+
+                    $('#TransactionId').val(TransactionId);
+                    $('#RegisterDate').val(RegisterDate);
+                    $('#Amount').val(Amount);
+                    $('#ShortDescription').val(ShortDescription);
+                    $('#Notes').val(Notes);
+
+
+                    $("#MyPopup").modal("show");
+                }
+            });
+        });
+
+        $("#btnClosePopup").click(function () {
+            $('#MyPopup').modal('hide');
+        });
+
+        $(".close").click(function () {
+            $('#MyPopup').modal('hide');
+        });
+
+        function editarRegistros() {
+            let TransactionId = $("#TransactionId").val();
+            let TransactionType = $("#TransactionTypeSelect").val();
+            let Category = $("#CategorySelect").val();
+            let RegisterDate = $("#RegisterDate").val();
+            let Amount = $("#Amount").val();
+            let ShortDescription = $("#ShortDescription").val();
+            let Notes = $("#Notes").val();
+
+            $.ajax({
+                url: '/Transaction/EditPOPUP',
+                data: "TransactionId=" + TransactionId + "&TransactionTypeId=" + TransactionType + "&CategoryId=" + Category + "&RegisterDateString="
+                    + RegisterDate + "&Amount=" + Amount + "&ShortDescription=" + ShortDescription + "&Notes=" + Notes,
+                type: 'POST',
+                success: function (response) {
+                    window.location = "/Transaction";
+                    return true;
+                }
+            });
+        }
+    });
+</script>

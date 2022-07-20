@@ -18,7 +18,7 @@ namespace Rp3.Test.WebApi.Data.Controllers
             using (DataService service = new DataService())
             {
                 var query = service.Categories.GetQueryable();
-                
+
                 if (active.HasValue)
                     query = query.Where(p => p.Active == active.Value);
 
@@ -26,10 +26,10 @@ namespace Rp3.Test.WebApi.Data.Controllers
                 {
                     Active = p.Active,
                     CategoryId = p.CategoryId,
-                    Name = p.Name                    
-                }).ToList();                
-            }
 
+                    Name = p.Name
+                }).ToList();
+            }
             return Ok(commonModel);
         }
 
@@ -57,10 +57,10 @@ namespace Rp3.Test.WebApi.Data.Controllers
             using (DataService service = new DataService())
             {
                 Rp3.Test.Data.Models.Category categoryModel = new Test.Data.Models.Category();
-                categoryModel.Active = category.Active;                
+                categoryModel.Active = category.Active;
                 categoryModel.Name = category.Name;
 
-                categoryModel.CategoryId = service.Categories.GetMaxValue<int>(p => p.CategoryId,0) + 1;
+                categoryModel.CategoryId = service.Categories.GetMaxValue<int>(p => p.CategoryId, 0) + 1;
 
                 service.Categories.Insert(categoryModel);
                 service.SaveChanges();

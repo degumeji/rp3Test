@@ -24,5 +24,10 @@ namespace Rp3.Test.Data.Repositories
         }
 
         */
+
+        public List<Balance> GetBalance()
+        {
+            return this.DataBase.SqlQuery<Balance>("EXEC dbo.spGetBalance").ToList();
+        }
     }
 }
